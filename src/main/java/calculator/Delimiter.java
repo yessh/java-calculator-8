@@ -7,43 +7,49 @@ import java.util.regex.Pattern;
 
 public class Delimiter {
 
-    private String numberPart;
-    private String delimiter = "[,:]";
+    private static final String CUSTOM_REGEX = "^//(.)\\\\n(.+)$";
+    private static final String DEFAULT_DELIMITER = "[,:]";
 
-    private final String CUSTOM_REGEX = "^//(.)\\\\n(.+)$";
-    private final String NUMBERPART_REGEX = "^\\d+(" + delimiter + "\\d+)*$";
+    private record ParsingInfo(String numberPart, String delimiter){}
 
 
     public List<Integer> parse(String text) {
 
-        findCustomRegex(text);
+        ParsingInfo info = findParsingInfo(text);
 
-        validateNumberPartFormat(numberPart);
+        validateNumberPartFormat(info.numberPart, info.delimiter);
 
-        return convertToIntegerList(numberPart);
-
+        return convertToIntegerList(info.numberPart, info.delimiter);
     }
 
-    private void findCustomRegex(String text) {
+
+    private ParsingInfo findParsingInfo(String text) {
         Matcher customRegexMatcher = Pattern.compile(CUSTOM_REGEX).matcher(text);
+
         if (customRegexMatcher.matches()) {
             String customDelimiter = customRegexMatcher.group(1);
-            this.numberPart = customRegexMatcher.group(2);
+            String numberPart = customRegexMatcher.group(2);
 
-            this.delimiter += "|" + Pattern.quote(customDelimiter);
+            String delimiter = DEFAULT_DELIMITER + "|" + Pattern.quote(customDelimiter);
+
+            return new ParsingInfo(numberPart, delimiter);
         } else {
-            this.numberPart = text;
+            return new ParsingInfo(text, DEFAULT_DELIMITER);
         }
     }
 
-    private void validateNumberPartFormat(String text) {
-        if (!numberPart.matches(NUMBERPART_REGEX)) {
+
+    private void validateNumberPartFormat(String numberPart, String delimiter) {
+        String numberPartRegex = "^\\d+(" + delimiter + "\\d+)*$";
+
+        if (!numberPart.matches(numberPartRegex)) {
             throw new IllegalArgumentException("잘못된 형식의 입력입니다");
         }
 
     }
 
-    private List<Integer> convertToIntegerList(String numberPart) {
+
+    private List<Integer> convertToIntegerList(String numberPart, String delimiter) {
         String[] numberStrings = numberPart.split(delimiter);
 
         return Arrays.stream(numberStrings)
