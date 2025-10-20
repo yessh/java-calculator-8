@@ -49,6 +49,10 @@ public class Delimiter {
 
 
     private List<Integer> convertToIntegerList(String numberPart, String delimiter) {
+        if (numberPart.isEmpty()) {
+            return List.of();
+        }
+
         String[] numberStrings = numberPart.split(delimiter);
 
         return Arrays.stream(numberStrings)
