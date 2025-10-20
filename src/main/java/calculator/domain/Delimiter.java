@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 
 public class Delimiter {
 
-    private static final String CUSTOM_REGEX = "^//(.+)\\n(.+)$";
+    private static final String CUSTOM_REGEX = "^//(.+)\\\\n(.+)$";
     private static final String DEFAULT_DELIMITER = "[,:]";
 
     private record ParsingInfo(String numberPart, String delimiter){}
