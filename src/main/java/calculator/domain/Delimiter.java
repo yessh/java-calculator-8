@@ -40,12 +40,11 @@ public class Delimiter {
 
 
     private void validateNumberPartFormat(String numberPart, String delimiter) {
-        String numberPartRegex = "^\\d+(" + delimiter + "\\d+)*$";
+        String numberPartRegex = "^(-?\\d+(" + delimiter + "-?\\d+)*)?$";
 
         if (!numberPart.matches(numberPartRegex)) {
             throw new IllegalArgumentException("잘못된 형식의 입력입니다");
         }
-
     }
 
 
