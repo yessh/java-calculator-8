@@ -49,7 +49,7 @@ class DelimiterTest {
 
     @DisplayName("커스텀 구분자로 숫자 입력되면 예외 발생")
     @Test
-    void inputNumberCustomDelimiter() {
+    void throwExceptionForNumberDelimiter() {
         // given
         String input = "//2\\n12121";
         // when
@@ -62,7 +62,7 @@ class DelimiterTest {
 
     @DisplayName("커스텀 구분자로 두 개 이상의 문자가 입력되면 예외 발생")
     @Test
-    void inputManyNumbersCustomDelimiter() {
+    void throwExceptionForMultiCharDelimiter() {
         // given
         String input = "//@@\\n1@@2@@3";
         // when
@@ -70,5 +70,16 @@ class DelimiterTest {
         assertThatThrownBy(() -> delimiter.parse(input))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("커스텀 구분자로 하나의 문자만 가능합니다");
+    }
+
+    @DisplayName("2개 이상의 구분자로 숫자를 구분할 수 있다")
+    @Test
+    void parseWithMixedDelimiters() {
+        // given
+        String input = "//@\\n1,2:3@4";
+        // when
+        List<Integer> numbers = delimiter.parse(input);
+        // then
+        assertThat(numbers).isEqualTo(List.of(1,2,3,4));
     }
 }
