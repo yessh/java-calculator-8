@@ -25,7 +25,7 @@ class DelimiterTest {
         assertThat(numbers).isEqualTo(List.of(1,2,3));
     }
 
-    @DisplayName("빈 배열 입력을 입력 가능")
+    @DisplayName("빈 배열 입력 가능")
     @Test
     void inputEmpty() {
         // given
@@ -40,7 +40,7 @@ class DelimiterTest {
     @Test
     void inputCustomDelimiter() {
         // given
-        String input = "//@\n1@2@3";
+        String input = "//@\\n1@2@3";
         // when
         List<Integer> numbers = delimiter.parse(input);
         // then
@@ -51,7 +51,7 @@ class DelimiterTest {
     @Test
     void inputNumberCustomDelimiter() {
         // given
-        String input = "//2\n12121";
+        String input = "//2\\n12121";
         // when
         // then
         assertThatThrownBy(() -> delimiter.parse(input))
@@ -59,11 +59,12 @@ class DelimiterTest {
                 .hasMessage("커스텀 구분자로 숫자가 올 수 없습니다");
     }
 
+
     @DisplayName("커스텀 구분자로 두 개 이상의 문자가 입력되면 예외 발생")
     @Test
     void inputManyNumbersCustomDelimiter() {
         // given
-        String input = "//@@\n1@@2@@3";
+        String input = "//@@\\n1@@2@@3";
         // when
         // then
         assertThatThrownBy(() -> delimiter.parse(input))
