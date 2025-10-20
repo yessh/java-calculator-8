@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 
 public class Delimiter {
 
-    private static final String CUSTOM_REGEX = "^//(.)\\n(.+)$";
+    private static final String CUSTOM_REGEX = "^//(.+)\\n(.+)$";
     private static final String DEFAULT_DELIMITER = "[,:]";
 
     private record ParsingInfo(String numberPart, String delimiter){}
@@ -30,11 +30,24 @@ public class Delimiter {
             String customDelimiter = customRegexMatcher.group(1);
             String numberPart = customRegexMatcher.group(2);
 
+            validateCustomDelimiter(customDelimiter);
+
             String delimiter = DEFAULT_DELIMITER + "|" + Pattern.quote(customDelimiter);
 
             return new ParsingInfo(numberPart, delimiter);
         } else {
             return new ParsingInfo(text, DEFAULT_DELIMITER);
+        }
+    }
+
+    private void validateCustomDelimiter(String customDelimiter) {
+        if (customDelimiter.length() != 1) {
+            throw new IllegalArgumentException("커스텀 구분자로 하나의 문자만 가능합니다");
+        }
+
+        String numbers = "[0-9]";
+        if (customDelimiter.matches(numbers)) {
+            throw new IllegalArgumentException("커스텀 구분자로 숫자가 올 수 없습니다");
         }
     }
 
